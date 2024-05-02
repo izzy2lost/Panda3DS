@@ -247,6 +247,16 @@ namespace Audio {
 			return;
 		}
 
+		if (config.resetFlag) {
+			config.resetFlag = 0;
+			source.reset();
+		}
+
+		if (config.partialResetFlag) {
+			config.partialResetFlag = 0;
+			source.buffers = {};
+		}
+
 		if (config.enableDirty) {
 			config.enableDirty = 0;
 			source.enabled = config.enable != 0;
@@ -264,16 +274,6 @@ namespace Audio {
 				adpcmCoefficients, adpcmCoefficients + source.adpcmCoefficients.size(), source.adpcmCoefficients.begin(),
 				[](const s16_le& input) -> s16 { return s16(input); }
 			);
-		}
-
-		if (config.resetFlag) {
-			config.resetFlag = 0;
-			source.reset();
-		}
-
-		if (config.partialResetFlag) {
-			config.partialResetFlag = 0;
-			source.buffers = {};
 		}
 
 		// TODO: Should we check bufferQueueDirty here too?
@@ -316,8 +316,35 @@ namespace Audio {
 		}
 
 		if (config.bufferQueueDirty) {
-			config.bufferQueueDirty = 0;
-			printf("Buffer queue dirty for voice %d\n", source.index);
+			u32 dirtyBuffers = config.buffersDirty;
+
+			for (uint i = 0; i < 4; i++) {
+				const auto& buff = config.buffers[i];
+				if (dirtyBuffers & 1) {
+					Source::Buffer buffer{
+						.paddr = buff.physicalAddress,
+						.sampleCount = buff.length,
+						.adpcmScale = u8(buff.adpcm_ps),
+						.previousSamples = {s16(buff.adpcm_yn[0]), s16(buff.adpcm_yn[1])},
+						.adpcmDirty = buff.adpcmDirty != 0,
+						.looping = buff.isLooping != 0,
+						.bufferID = buff.bufferID,
+						.playPosition = 0,
+						.format = source.sampleFormat,
+						.sourceType = source.sourceType,
+						.fromQueue = true,
+						.hasPlayedOnce = false,
+					};
+
+					// Some games are buggy and use huge buffers due to underflows
+					if (s32(buffer.sampleCount) >= 0) {
+						source.buffers.emplace(std::move(buffer));
+					}
+				}
+
+				// Move to next buffer
+				dirtyBuffers >>= 1;
+			}
 		}
 
 		config.dirtyRaw = 0;
