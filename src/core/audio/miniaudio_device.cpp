@@ -90,16 +90,17 @@ void MiniAudioDevice::init(Samples& samples, bool safe) {
 	deviceConfig.dataCallback = [](ma_device* device, void* out, const void* input, ma_uint32 frameCount) {
 		auto self = reinterpret_cast<MiniAudioDevice*>(device->pUserData);
 		s16* output = reinterpret_cast<ma_int16*>(out);
+		u32 sampleCount = frameCount * channelCount;
 
 		// Wait until there's enough samples to pop
-		while (self->samples->size() < frameCount * channelCount) {
+		while (sampleCount > 0) {
 			// If audio output is disabled from the emulator thread, make sure that this callback will return and not hang
 			if (!self->running) {
 				return;
 			}
-		}
 
-		self->samples->pop(output, frameCount * channelCount);
+			sampleCount -= self->samples->pop(output, sampleCount);
+		}
 	};
 
 	if (ma_device_init(&context, &deviceConfig, &device) != MA_SUCCESS) {
