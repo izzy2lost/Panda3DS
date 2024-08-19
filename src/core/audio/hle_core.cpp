@@ -285,6 +285,30 @@ namespace Audio {
 			);
 		}
 
+		if (config.gain0Dirty) {
+			auto& gain = config.gain[0];
+			source.gain0[0] = float(gain[0]);
+			source.gain0[1] = float(gain[1]);
+			source.gain0[1] = float(gain[2]);
+			source.gain0[2] = float(gain[3]);
+		}
+
+		if (config.gain1Dirty) {
+			auto& gain = config.gain[1];
+			source.gain1[0] = float(gain[0]);
+			source.gain1[1] = float(gain[1]);
+			source.gain1[1] = float(gain[2]);
+			source.gain1[2] = float(gain[3]);
+		}
+		
+		if (config.gain2Dirty) {
+			auto& gain = config.gain[2];
+			source.gain2[0] = float(gain[0]);
+			source.gain2[1] = float(gain[1]);
+			source.gain2[1] = float(gain[2]);
+			source.gain2[2] = float(gain[3]);
+		}
+
 		// TODO: Should we check bufferQueueDirty here too?
 		if (config.formatDirty || config.embeddedBufferDirty) {
 			source.sampleFormat = config.format;

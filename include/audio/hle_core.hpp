@@ -129,6 +129,9 @@ namespace Audio {
 		std::array<Source, Audio::HLE::sourceCount> sources;  // DSP voices
 		Audio::HLE::DspMemory dspRam;
 
+		// Final output frame
+		StereoFrame<s16> processedFrame;
+
 		void resetAudioPipe();
 		bool loaded = false;  // Have we loaded a component?
 
