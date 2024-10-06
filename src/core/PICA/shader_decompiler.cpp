@@ -220,7 +220,23 @@ const Function* ShaderDecompiler::findFunction(const AddressRange& range) {
 
 void ShaderDecompiler::writeAttributes() {
 	decompiledShader += R"(
-	layout(location = 0) in vec4 inputs[16];
+	layout(location = 0) in vec4 input0;
+	layout(location = 1) in vec4 input1;
+	layout(location = 2) in vec4 input2;
+	layout(location = 3) in vec4 input3;
+	layout(location = 4) in vec4 input4;
+	layout(location = 5) in vec4 input5;
+	layout(location = 6) in vec4 input6;
+	layout(location = 7) in vec4 input7;
+	layout(location = 8) in vec4 input8;
+	layout(location = 9) in vec4 input9;
+	layout(location = 10) in vec4 input10;
+	layout(location = 11) in vec4 input11;
+	layout(location = 12) in vec4 input12;
+	layout(location = 13) in vec4 input13;
+	layout(location = 14) in vec4 input14;
+	layout(location = 15) in vec4 input15;
+
 	layout(std140) uniform PICAShaderUniforms {
 		vec4 uniform_f[96];
 		uvec4 uniform_i;
@@ -338,7 +354,7 @@ std::string ShaderDecompiler::decompile() {
 
 std::string ShaderDecompiler::getSource(u32 source, [[maybe_unused]] u32 index) const {
 	if (source < 0x10) {
-		return "inputs[" + std::to_string(source) + "]";
+		return "input" + std::to_string(source);
 	} else if (source < 0x20) {
 		return "temp[" + std::to_string(source - 0x10) + "]";
 	} else {
