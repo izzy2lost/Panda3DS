@@ -510,6 +510,7 @@ void RendererGL::drawVertices(PICA::PrimType primType, std::span<const Vertex> v
 	setupStencilTest(stencilEnable);
 
 	if (!usingAcceleratedShader) {
+		return;
 		vbo.bufferVertsSub(vertices);
 		OpenGL::draw(primitiveTopology, GLsizei(vertices.size()));
 	} else {
