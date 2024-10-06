@@ -384,7 +384,7 @@ namespace OpenGL {
 			if (success == GL_FALSE) {
 				char buf[4096];
 				glGetShaderInfoLog(m_handle, 4096, nullptr, buf);
-				__android_log_print("Failed to compile shader\nError: %s\nShader: %s", buf, sources[0]);
+				__android_log_print(ANDROID_LOG_INFO, "AlberDriver", "Failed to compile shader\nError: %s\nShader: %s", buf, sources[0]);
 				glDeleteShader(m_handle);
 
 				m_handle = 0;
