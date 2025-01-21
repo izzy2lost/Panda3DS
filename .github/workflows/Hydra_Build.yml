@@ -41,7 +41,7 @@ jobs:
     - name: Configure CMake (Again)
       run: |
         rm -r -fo ${{github.workspace}}/build 
-        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DENABLE_USER_BUILD=ON -DBUILD_LIBRETRO_CORE=ON
+        cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DENABLE_USER_BUILD=ON -DBUILD_LIBRETRO_CORE=ON -DENABLE_VULKAN=ON
 
     - name: Build (Again)
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
